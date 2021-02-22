@@ -1,0 +1,89 @@
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">密碼修改</h4>
+            <div class="form-validation">
+                <form class="form-valide" id="form1" th:action="@{/member/change/pwd}" method="post">
+                    <div class="form-group">
+                        <label>原密碼<span class="text-danger">*</span></label>
+                        <input type="password" id="oldPwd" name="oldPwd" class="form-control" onchange="checkOldPwd();"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label>新密碼<span class="text-danger">*</span></label>
+                        <input type="password" id="newPwd" name="newPwd" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>再次輸入<span class="text-danger">*</span></label>
+                        <input type="password" id="confirmPwd" name="confirmPwd" class="form-control" required>
+                    </div>
+                    <button type="button" class="btn btn-dark" onclick="onSubmit()">確認修改</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function onSubmit() {
+        if (checkData("oldPwd")) {
+            $("#oldPwd").focus();
+            swal("[原密碼]為少填欄位，請輸入。");
+            return false;
+        }
+        if (checkData("newPwd")) {
+            $("#newPwd").focus();
+            swal("]新密碼]為必填欄位，請輸入。");
+            return false;
+        }
+        if (checkData("confirmPwd")) {
+            $("#confirmPwd").focus();
+            swal("[確認新密碼]為必填欄位，請輸入。");
+            return false;
+        }
+        if (!checkNewPwd()) {
+            swal("新密碼兩次輸入不一致");
+            return;
+        }
+
+        swal({
+            title: "確認是否修改?",
+            text: "密確修改完畢後，將重新登入，是否繼續？",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "確認修改，並登出。",
+            closeOnConfirm: !1
+        }, function () {
+            $("#form1").submit();
+        })
+    }
+
+    function checkOldPwd() {
+        $.ajax({
+            type: "OPTIONS",
+            url: "/" + projectName + "/member/pwd/check",
+            data: JSON.stringify($("#form1").serializeJSON()),
+            datatype: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                if (result == "pass") {
+                    return;
+                }
+                $("#oldPwd").val("");
+                $("#oldPwd").focus();
+                swal("原密碼輸入不正確");
+            },
+            error: function () {
+                alert("密碼檢測失敗");
+                return false;
+            }
+        });
+
+    }
+
+    function checkNewPwd() {
+        return $("#newPwd").val() == $("#confirmPwd").val();
+    }
+</script>
+                    

@@ -1,0 +1,45 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>後台管理系統</title>
+    <link th:replace="public/elements/css.html :: icon">
+    <link th:replace="public/elements/css.html :: calender">
+    <link th:replace="public/elements/css.html :: chartist">
+    <link th:replace="public/elements/css.html :: style">
+    <link th:replace="public/elements/css.html :: datatable">
+    <link th:replace="public/elements/css.html :: sweetalert">
+    <link th:replace="public/elements/css.html :: datePicker">
+</head>
+<div th:replace="public/elements/preloader.html"/>
+<body>
+<div id="main-wrapper">
+    <div th:replace="public/layout/header/header-nav.html"/>
+    <div th:replace="public/layout/header/header.html"/>
+    <div th:replace="public/layout/sidebar/sidebar.html"/>
+
+    <div class="content-body">
+        <div class="row page-titles mx-0">
+            <div class="col p-md-0">
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row" th:insert="${view}">
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="public/elements/js.html :: common"/>
+<script th:replace="public/elements/js.html :: chart"/>
+<script th:replace="public/elements/js.html :: circleProgress"/>
+<script th:replace="public/elements/js.html :: datamap"/>
+<script th:replace="public/elements/js.html :: morris"/>
+<script th:replace="public/elements/js.html :: calender"/>
+<script th:replace="public/elements/js.html :: chartist"/>
+<script th:replace="public/elements/js.html :: dataTables"/>
+<script th:replace="public/elements/js.html :: sweetalert"/>
+<script th:replace="public/elements/js.html :: datePicker"/>
+<script th:replace="public/elements/common-js.html"/>
+</body>
+</html>

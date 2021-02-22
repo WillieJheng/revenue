@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="willie.com.revenue.dao.member.MembersDao">
+    <select id="findMemberByMemberId" resultType="willie.com.revenue.beans.html.views.member.MemberBean">
+        SELECT
+            *
+        FROM
+            members
+        where
+             member_id=#{memberId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findMemberByMemberIdAndPassword" resultType="willie.com.revenue.beans.html.views.member.MemberBean">
+        SELECT
+            *
+        FROM
+            members
+        where
+             member_id=#{memberId,jdbcType=VARCHAR}
+             and password=#{password,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findMembersByCreateMemberId" resultType="willie.com.revenue.beans.html.views.member.MemberBean">
+        SELECT
+            *
+        FROM
+            members
+        where
+             create_member=#{memberId,jdbcType=VARCHAR}
+         order by
+             create_time desc;
+    </select>
+
+    <delete id="deleteByMemberId">
+        delete from members where member_id=#{memberId}
+    </delete>
+
+    <insert id="save">
+        INSERT  INTO members(
+            `member_id`,
+            `password`,
+            `project_name`,
+            `background`,
+            `e-mail`,
+            `status`,
+            `expiry_date`,
+            `login_time`,
+            `login_ip`,
+            `login_count`,
+            `create_time`,
+            `create_member`,
+            `update_time`,
+            `update_member`
+        )VALUES(
+            #{memberId},
+            #{password},
+            #{projectName},
+            #{background},
+            #{email},
+            #{status},
+            #{expiryDate},
+            #{loginTime},
+            #{loginIp},
+            #{loginCount},
+            #{createTime},
+            #{createMember},
+            #{updateTime},
+            #{updateMember}
+        ) ON DUPLICATE KEY UPDATE
+            member_id=VALUES(member_id),
+            password=VALUES(password),
+            project_name=VALUES(project_name),
+            background=VALUES(background),
+            `e-mail`=VALUES(`e-mail`),
+            status=VALUES(status),
+            expiry_date=VALUES(expiry_date),
+            login_time=VALUES(login_time),
+            login_ip=VALUES(login_ip),
+            login_count=VALUES(login_count),
+            expiry_date=VALUES(expiry_date),
+            update_time=VALUES(update_time),
+            update_member=VALUES(update_member)
+    </insert>
+</mapper>

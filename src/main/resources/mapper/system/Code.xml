@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="willie.com.autopay.dao.system.CodeDao">
+    <select id="findCodeByType" resultType="willie.com.revenue.beans.html.views.system.CodeBean">
+        select
+            *
+        from
+            sys_code
+        where
+            sys=#{sys,jdbcType=VARCHAR}
+            and sub_sys=#{subSys,jdbcType=VARCHAR}
+            and `type`=#{type,jdbcType=VARCHAR}
+       order by sequence;
+    </select>
+
+    <select id="findCodeByNo" resultType="willie.com.revenue.beans.html.views.system.CodeBean">
+        select
+            *
+        from
+            sys_code
+        where
+            sys=#{sys,jdbcType=VARCHAR}
+            and sub_sys=#{subSys,jdbcType=VARCHAR}
+            and `type`=#{type,jdbcType=VARCHAR}
+            and `no`=#{no,jdbcType=VARCHAR}
+    </select>
+</mapper>

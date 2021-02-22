@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="willie.com.revenue.dao.system.PermissionDao">
+    <select id="findPermissionByRolesAndPositionAndUpnode" resultType="willie.com.revenue.beans.html.views.system.PermissionBean">
+        SELECT
+            role_id,
+            node,
+            upnode,
+            url,
+            `name`,
+            icon
+        FROM
+            role_permission rp
+            LEFT JOIN `sys_permissions` p ON rp.permission_node = p.node
+        WHERE
+             role_id IN
+            <foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
+            AND `position` =#{position}
+            AND upnode =#{upnode}
+        ORDER BY
+            sequence
+    </select>
+</mapper>

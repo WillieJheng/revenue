@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="willie.com.revenue.dao.score.ScoreDao">
+
+    <select id="findPosScores" resultType="willie.com.revenue.beans.html.views.score.ScoreReportBean">
+        select sum(score) total_score
+        from score
+        where record_date between #{startDate} and #{endDate}
+          and score >= 0;
+    </select>
+
+    <select id="findNegScores" resultType="willie.com.revenue.beans.html.views.score.ScoreReportBean">
+        select sum(score) total_score
+        from score
+        where record_date between #{startDate} and #{endDate}
+          and score <![CDATA[ < ]]> 0;
+    </select>
+
+    <select id="findRoundScores" resultType="willie.com.revenue.beans.html.views.score.ScoreReportBean">
+        select sum(round_count * player_scale) total_round_score
+        from score s,
+             players p
+        where s.player_id = p.player_id
+          and record_date between #{startDate} and #{endDate}
+    </select>
+
+    <select id="findTotalScoresByRecordDate" resultType="willie.com.revenue.beans.html.views.score.ScoreReportBean">
+        select sum(score - round_count * player_scale) total_score
+        from score s,
+             players p
+        where s.player_id = p.player_id
+          and record_date between #{startDate} and #{endDate}
+    </select>
+
+    <select id="findTotalScoresByRecordDateGroupByPlayerId"
+            resultType="willie.com.revenue.beans.html.views.score.ScoreReportBean">
+        select (select player_name from players where player_id = s.player_id) player_name,
+               sum(score)                                                      total_score,
+               sum(round_count)                                                total_round,
+               sum(round_count * player_scale)                                 total_round_score,
+               sum(score - round_count * player_scale)                         total
+        from score s,
+             players p
+        where s.player_id = p.player_id
+          and record_date between #{startDate} and #{endDate}
+        group by s.player_id
+        order by total_score desc;
+    </select>
+
+    <select id="findScores" resultType="willie.com.revenue.beans.html.views.score.ScoreBean">
+        SELECT *,
+               (select player_name from players where player_id = s.player_id) player_name
+        FROM score s
+        order by record_date desc, player_id;
+    </select>
+
+    <delete id="deleteByRecordDateAndPlayerId">
+        delete
+        from score
+        where player_id = #{playerId}
+          and record_date = #{recordDate}
+    </delete>
+
+    <insert id="save">
+        INSERT INTO score(`record_date`,
+                          `player_id`,
+                          `score`,
+                          `round_count`,
+                          `create_time`,
+                          `create_member`,
+                          `update_time`,
+                          `update_member`)
+        VALUES (#{recordDate},
+                #{playerId},
+                #{score},
+                #{roundCount},
+                #{createTime},
+                #{createMember},
+                #{updateTime},
+                #{updateMember})
+        ON DUPLICATE KEY UPDATE record_date=VALUES(record_date),
+                                player_id=VALUES(player_id),
+                                score=VALUES(score),
+                                round_count=VALUES(round_count),
+                                update_time=VALUES(update_time),
+                                update_member=VALUES(update_member)
+    </insert>
+</mapper>

@@ -1,0 +1,187 @@
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">新增遊戲記錄</h4>
+            <div class="basic-form">
+                <form id="addScoreForm" method="post" th:action="@{${action}}">
+                    <div class="row">
+                        <div class="col-2">
+                            <input class="form-control input-date"
+                                   type="text"
+                                   name="addRecordDate"
+                                   th:value="${scoreAddBean.addRecordDate}">
+                        </div>
+                        <div class="col-2">
+                            <select class="form-control"
+                                    id="addPlayerId"
+                                    name="addPlayerId">
+                                <option th:each="list:${players}"
+                                        th:value="${list.playerId}"
+                                        th:text="${list.playerName}"
+                                        th:selected="${list.playerId eq scoreAddBean.addPlayerId}"
+                                ></option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <input type="text"
+                                   name="addScore"
+                                   class="form-control"
+                                   placeholder="積分">
+                        </div>
+                        <div class="col-2">
+                            <input type="text"
+                                   name="addRoundCount"
+                                   class="form-control"
+                                   placeholder="總局數">
+                        </div>
+                        <div class="col-2">
+                            <button type="button"
+                                    class="btn mb-1 btn-outline-primary"
+                                    onclick="onSubmit('addScoreForm')">新增
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br><br><br>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>記錄日期</th>
+                        <th>玩家名稱</th>
+                        <th>積分</th>
+                        <th>總局數</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="result,iterStat :${data}">
+                        <td th:text="${result.viewRecordDate}"></td>
+                        <td th:text="${result.viewPlayerName}"></td>
+                        <td th:text="${result.viewScore}"></td>
+                        <td th:text="${result.viewRoundCount}"></td>
+                        <td>
+                            <div class="bootstrap-modal">
+                                <button type="button" class="btn mb-1 btn-info" data-toggle="modal"
+                                        th:data-target="'#modifyPage'+${iterStat.index}">修改
+                                </button>
+                                <button type="button" class="btn mb-1 btn-danger"
+                                        th:player-id="${result.editPlayerId}"
+                                        th:record-date="${result.editRecordDate}"
+                                        th:onclick="doDelete(this.getAttribute('record-date'),this.getAttribute('player-id'))"
+                                >刪除
+                                </button>
+                                <div class="modal fade" th:id="'modifyPage'+${iterStat.index}">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">記錄修改</h5>
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    <span>&times;</span>
+                                                </button>
+                                            </div>
+                                            <form role="form"
+                                                  th:id="'edit_form'+${iterStat.index}"
+                                                  th:action="@{${action}}"
+                                                  method="post">
+
+                                                <div class="modal-body">
+                                                    <input type="hidden"
+                                                           name="editPlayerId"
+                                                           th:value="${result.editPlayerId}">
+                                                    <div class="form-group">
+                                                        <label>記錄日期</label>
+                                                        <input type="text"
+                                                               name="editRecordDate"
+                                                               class="form-control"
+                                                               th:value="${result.editRecordDate}"
+                                                               readonly>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>玩家名稱</label>
+                                                        <input type="text"
+                                                               name="editPlayerName"
+                                                               class="form-control"
+                                                               th:value="${result.editPlayerName}"
+                                                               readonly>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>積分</label>
+                                                        <input type="text"
+                                                               name="editScore"
+                                                               class="form-control"
+                                                               th:value="${result.editScore}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>總局數</label>
+                                                        <input type="text"
+                                                               name="editRoundCount"
+                                                               class="form-control"
+                                                               th:value="${result.editRoundCount}">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary"
+                                                            th:form-id="'edit_form'+${iterStat.index}"
+                                                            th:onclick="onSubmit(this.getAttribute('form-id'))">確認修改
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function onSubmit(formId) {
+        document.getElementById(formId).submit();
+    }
+
+    function doDelete(recordDate, playerId) {
+        swal({
+            title: "確認是否刪除?",
+            text: "",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#dd6b55",
+            confirmButtonText: "確認刪除",
+            closeOnConfirm: !1
+        }, function () {
+            $.ajax({
+                type: "DELETE",
+                url: "/" + projectName + "/score/" + recordDate + "/" + playerId,
+                data: {},
+                datatype: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.status == "OK") {
+                        swal({
+                            title: result.msg,
+                            text: "頁面將自動重整",
+                            timer: 2e3,
+                            showConfirmButton: !1
+                        })
+                        setTimeout(function () {
+                            location.reload();
+                        }, 5e2)
+                    } else {
+                        swal(result.msg);
+                    }
+                },
+                error: function () {
+                    alert("刪除失敗");
+                }
+            });
+        });
+    }
+</script>

@@ -1,0 +1,50 @@
+<script>
+    let projectName = "revenue";
+
+    function checkData(id) {
+        if ($('#' + id).val() == '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function doAjaxSubmit(formId, url) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify($("#" + formId).serializeJSON()),
+            datatype: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                swal(result.msg);
+            },
+            error: function () {
+                alert("Ajax連線失敗!")
+            }
+        });
+    }
+
+    function checkServer() {
+        $.ajax({
+            type: "OPTIONS",
+            url: "/"+projectName+"/server/connection/check",
+            data: JSON.stringify($("#serverForm").serializeJSON()),
+            datatype: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                $("#connectionStatus").val(result);
+                if (result == "連線成功") {
+                    swal("連線成功!!!", "您可點擊繼續", "success")
+                    return;
+                }
+                sweetAlert("測試失敗", "連線失敗了!!!", "error");
+            },
+            error: function () {
+                alert("檢測連線失敗");
+            }
+        });
+    }
+
+
+</script>

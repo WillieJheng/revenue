@@ -1,0 +1,46 @@
+<html class="h-100" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>系統登入</title>
+<!--    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">-->
+    <link th:href="@{/css/style.css}" href="" rel="stylesheet">
+</head>
+<div th:replace="public/elements/preloader.html"/>
+<body class="h-100 login-img-body">
+<div class="login-form-bg h-100">
+    <div class="container h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-xl-6">
+                <div class="form-input-content">
+                    <div class="card login-form mb-0">
+                        <div class="card-body pt-5">
+                            <h2 align="center"><i class="icon-lock">登入系統</i></h2>
+                            <form class="mt-5 mb-5 login-input" th:action="@{/login}" th:method="post">
+                                <div class="form-group">
+                                    <input type="text" name="account" class="form-control" placeholder="帳號" autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="pwd" class="form-control" placeholder="密碼">
+                                </div>
+                                <div class="input-group">
+                                    <p style="color:red" th:text="${errorMsg}" th:if="${not #strings.isEmpty(errorMsg)}"></p>
+                                </div>
+                                <button class="btn login-form__btn submit w-100">登入</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/plugins/common/common.min.js}"></script>
+<script th:src="@{/js/custom.min.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+<script th:src="@{/js/gleek.js}"></script>
+<script th:src="@{/js/styleSwitcher.js}"></script>
+</body>
+</html>

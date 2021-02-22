@@ -1,0 +1,138 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>後台管理系統</title>
+    <link th:replace="public/elements/css.html :: icon">
+    <link th:replace="public/elements/css.html :: calender">
+    <link th:replace="public/elements/css.html :: chartist">
+    <link th:replace="public/elements/css.html :: style">
+    <link th:replace="public/elements/css.html :: datatable">
+    <link th:replace="public/elements/css.html :: sweetalert">
+    <link th:replace="public/elements/css.html :: datePicker">
+</head>
+<div th:replace="public/elements/preloader.html"/>
+<body>
+<div id="main-wrapper">
+    <div th:replace="public/layout/header/header-nav.html"/>
+    <div th:replace="public/layout/header/header.html"/>
+<!--    <div th:replace="public/layout/sidebar/sidebar.html"/>-->
+
+    <div class="content-body">
+        <div class="row page-titles mx-0">
+            <div class="col p-md-0">
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>民宿代號</th>
+                                                    <th>民宿名稱</th>
+                                                    <th>狀態</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="memberBean:${memberBeans}">
+                                                    <td th:text="${memberBean.memberId}"></td>
+                                                    <td th:text="${memberBean.projectName}"></td>
+                                                    <td>
+                                                        <span th:class="${memberBean.statusCssClass}"
+                                                              th:text="${memberBean.statusDesc}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button"
+                                                                    class="btn mb-1 btn-primary dropdown-toggle"
+                                                                    data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">更改狀態
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item"
+                                                                   th:member-id="${memberBean.memberId}"
+                                                                   th:status-code="1"
+                                                                   th:onclick="updateMemberStatus(this.getAttribute('member-id'),this.getAttribute('status-code'))">啟用</a>
+                                                                <a class="dropdown-item"
+                                                                   th:member-id="${memberBean.memberId}"
+                                                                   th:status-code="2"
+                                                                   th:onclick="updateMemberStatus(this.getAttribute('member-id'),this.getAttribute('status-code'))">停用</a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="public/elements/js.html :: common"/>
+<script th:replace="public/elements/js.html :: chart"/>
+<script th:replace="public/elements/js.html :: circleProgress"/>
+<script th:replace="public/elements/js.html :: datamap"/>
+<script th:replace="public/elements/js.html :: morris"/>
+<script th:replace="public/elements/js.html :: calender"/>
+<script th:replace="public/elements/js.html :: chartist"/>
+<script th:replace="public/elements/js.html :: dataTables"/>
+<script th:replace="public/elements/js.html :: sweetalert"/>
+<script th:replace="public/elements/js.html :: datePicker"/>
+<script th:replace="public/elements/common-js.html"/>
+</body>
+<script>
+    function updateMemberStatus(memberId, statusCode) {
+        swal({
+            title: "確定修改狀態嗎?",
+            text: "民宿代號：" + memberId,
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#dd6b55",
+            confirmButtonText: "確認更改",
+            closeOnConfirm: !1
+        }, function () {
+            $.ajax({
+                type: "OPTIONS",
+                url: "/" + projectName + "/" + memberId + "/update/status/" + statusCode,
+                data: {},
+                datatype: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.status == "OK") {
+                        swal({
+                            title: result.msg,
+                            text: "頁面將自動重整",
+                            timer: 2e3,
+                            showConfirmButton: !1
+                        })
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1e3)
+                    } else {
+                        swal(result.msg);
+                    }
+                },
+                error: function () {
+                    alert("修改失敗");
+                }
+            });
+        })
+    }
+</script>
+</html>
+

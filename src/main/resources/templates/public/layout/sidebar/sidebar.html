@@ -1,0 +1,18 @@
+<div class="nk-sidebar" xmlns:th="http://www.thymeleaf.org" >
+    <div class="nk-nav-scroll">
+        <ul class="metismenu" id="menu">
+            <li class="mega-menu mega-menu-sm" th:each="main:${session.mainMenu.subMenu}">
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i th:class="${main.icon}+' menu-icon'">
+                    <span class="nav-text" th:text="${main.name}"/>
+                    </i>
+                </a>
+                <ul aria-expanded="false">
+                    <li th:each="subMenu,subMenuStat:${main.subMenu}">
+                        <a th:href="@{${subMenu.url}}" th:text="${subMenu.name}" />
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

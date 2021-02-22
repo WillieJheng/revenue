@@ -1,0 +1,31 @@
+<div class="header">
+    <div class="header-content clearfix">
+        <div class="nav-control">
+            <div class="hamburger">
+                <span class="toggle-icon"><i class="icon-menu"></i></span>
+            </div>
+        </div>
+        <div class="header-right">
+            <ul class="clearfix">
+                <li class="icons dropdown d-none d-md-flex">
+                    <a href="javascript:void(0)" class="log-user" data-toggle="dropdown">
+                        <span th:text="${session.member.projectName}"></span>
+                        <i class="fa fa-angle-down f-s-14" aria-hidden="true"></i>
+                    </a>
+                    <div class="drop-down dropdown-profile dropdown-menu">
+                        <div class="dropdown-content-body">
+                            <ul>
+                                <li th:each="rightMenu:${session.rightMenu.subMenu}">
+                                    <a th:href="@{${rightMenu.url}}">
+                                        <i th:class="${rightMenu.icon}"></i>
+                                        <span th:text="${rightMenu.name}"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

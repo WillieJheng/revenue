@@ -1,0 +1,150 @@
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">新增玩家</h4>
+            <div class="basic-form">
+                <form id="addPlayerForm" method="post" th:action="@{${action}}">
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" name="addPlayerId" class="form-control" placeholder="玩家ID">
+                        </div>
+                        <div class="col">
+                            <input type="text" name="addPlayerName" class="form-control" placeholder="玩家名稱">
+                        </div>
+                        <div class="col">
+                            <input type="text"
+                                   name="addPlayerScale"
+                                   class="form-control"
+                                   value="4"
+                                   placeholder="局數值">
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn mb-1 btn-outline-primary"
+                                    onclick="onSubmit('addPlayerForm')">新增
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br><br><br>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>玩家ID</th>
+                        <th>玩家名稱</th>
+                        <th>局數值</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="result,iterStat :${data}">
+                        <td th:text="${result.viewPlayerId}"></td>
+                        <td th:text="${result.viewPlayerName}"></td>
+                        <td th:text="${result.viewPlayerScale}"></td>
+                        <td>
+                            <div class="bootstrap-modal">
+                                <button type="button" class="btn mb-1 btn-info" data-toggle="modal"
+                                        th:data-target="'#modifyPage'+${iterStat.index}">修改
+                                </button>
+                                <button type="button" class="btn mb-1 btn-danger"
+                                        th:player-id="${result.editPlayerId}"
+                                        th:onclick="doDelete(this.getAttribute('player-id'))"
+                                >刪除</button>
+                                <div class="modal fade" th:id="'modifyPage'+${iterStat.index}">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">會員資料修改</h5>
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    <span>&times;</span>
+                                                </button>
+                                            </div>
+                                            <form role="form"
+                                                  th:id="'edit_form'+${iterStat.index}"
+                                                  th:action="@{${action}}"
+                                                  method="post">
+
+                                                <input type="hidden"
+                                                       name="editPlayerId"
+                                                       th:value="${result.editPlayerId}">
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label>會員名稱</label>
+                                                        <input type="text"
+                                                               name="editPlayerName"
+                                                               class="form-control"
+                                                               th:value="${result.editPlayerName}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>局數值</label>
+                                                        <input type="text"
+                                                               name="editPlayerScale"
+                                                               class="form-control"
+                                                               th:value="${result.editPlayerScale}">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary"
+                                                            th:form-id="'edit_form'+${iterStat.index}"
+                                                            th:onclick="onSubmit(this.getAttribute('form-id'))">確認修改
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function onSubmit(formId) {
+        document.getElementById(formId).submit();
+    }
+
+    function doDelete(playerId) {
+        swal({
+            title: "確認是否刪除?",
+            text: "",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#dd6b55",
+            confirmButtonText: "確認刪除",
+            closeOnConfirm: !1
+        }, function () {
+            $.ajax({
+                type: "DELETE",
+                url: "/"+projectName+"/player/" + playerId,
+                data: {},
+                datatype: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.status == "OK") {
+                        swal({
+                            title: result.msg,
+                            text: "頁面將自動重整",
+                            timer: 2e3,
+                            showConfirmButton: !1
+                        })
+                        setTimeout(function () {
+                            location.reload();
+                        }, 5e2)
+                    } else {
+                        swal(result.msg);
+                    }
+                },
+                error: function () {
+                    alert("刪除失敗");
+                }
+            });
+        });
+    }
+</script>
